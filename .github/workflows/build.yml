@@ -1,7 +1,11 @@
 name: build-native
 on:
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      rev:
+        description: 'Ryujinx/SDL commit to build'
+        required: false
+        default: 'master'
 #  schedule:
 #    - cron: '0 0 * * *'
 env:
@@ -16,12 +20,11 @@ jobs:
       matrix:
         platform:
         - { name: win-x64,   os: windows-latest, flags: -A x64                                                                            }
-        - { name: win-x86,   os: windows-latest, flags: -A Win32                                                                          }
+        #- { name: win-x86,   os: windows-latest, flags: -A Win32                                                                          }
         - { name: win-arm64, os: windows-latest, flags: -A ARM64                                                                          }
-        - { name: linux-x64, os: ubuntu-20.04,   flags: -GNinja, target_apt_arch: ":amd64"                                               }
-        - { name: linux-x86, os: ubuntu-20.04,   flags: -GNinja, cmake_configure_env: CFLAGS=-m32 CXXFLAGS=-m32, target_apt_arch: ":i386" }
-        - { name: osx-x64,   os: macos-latest,   flags: -DCMAKE_OSX_ARCHITECTURES="x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.14"          }
-        # NOTE: macOS 11.0 is the first released supported by Apple Silicon.
+        - { name: linux-x64, os: ubuntu-20.04,   flags: -GNinja, target_apt_arch: ":amd64"                                                }
+        #- { name: linux-x86, os: ubuntu-20.04,   flags: -GNinja, cmake_configure_env: CFLAGS=-m32 CXXFLAGS=-m32, target_apt_arch: ":i386" }
+        - { name: osx-x64,   os: macos-latest,   flags: -DCMAKE_OSX_ARCHITECTURES="x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="11.0"           }
         - { name: osx-arm64, os: macos-latest,   flags: -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_OSX_DEPLOYMENT_TARGET="11.0"            }
     steps:
     - name: Setup Linux dependencies
@@ -71,11 +74,14 @@ jobs:
           libxxf86vm-dev${{ matrix.platform.target_apt_arch }} \
           libdrm-dev${{ matrix.platform.target_apt_arch }} \
           libgbm-dev${{ matrix.platform.target_apt_arch }} \
-          libpulse-dev${{ matrix.platform.target_apt_arch }}
+          libpulse-dev${{ matrix.platform.target_apt_arch }} \
+          libhidapi-dev${{ matrix.platform.target_apt_arch }} \
+          libwayland-client++0$ \
+          libwayland-cursor++0$ \
     - uses: actions/checkout@v3
       with:
-        repository: 'libsdl-org/SDL'
-        ref: 'SDL2'
+        repository: Ryujinx/SDL
+        ref: ${{ github.event.inputs.rev }}
     - uses: actions/checkout@v3
       with:
         path: 'SDL2-CS'
@@ -104,6 +110,11 @@ jobs:
     - name: Prepare release (macOS)
       run: cp install_output/lib/libSDL2-2.0.dylib SDL2-CS/native/${{ matrix.platform.name }}/libSDL2.dylib
       if: runner.os == 'macOS'
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.platform.name }}-binaries
+        path: install_output
     - name: Create pull request
       uses: peter-evans/create-pull-request@v4
       with:
