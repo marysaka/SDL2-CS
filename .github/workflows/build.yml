@@ -78,11 +78,11 @@ jobs:
           libhidapi-dev${{ matrix.platform.target_apt_arch }} \
           libwayland-client++0$ \
           libwayland-cursor++0$ \
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: Ryujinx/SDL
         ref: ${{ github.event.inputs.rev }}
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: 'SDL2-CS'
     - name: Configure CMake
@@ -130,11 +130,11 @@ jobs:
     name: ios
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: 'libsdl-org/SDL'
         ref: 'SDL2'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: 'SDL2-CS'
     - name: Build (iOS)
