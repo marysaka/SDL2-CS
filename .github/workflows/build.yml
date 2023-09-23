@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       rev:
-        description: 'Ryujinx/SDL commit to build'
-        required: false
-        default: 'master'
+        description: 'Ryujinx/SDL commit to build (this has to be a full commit sha, otherwise it will not work)'
+        required: true
 #  schedule:
 #    - cron: '0 0 * * *'
 env:
