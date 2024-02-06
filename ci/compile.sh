@@ -97,6 +97,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED_ENABLED_BY_DEFAULT=ON -DS
 cmake --build build/ --config Release
 $SUDO cmake --install build/ --prefix install_output --config Release
 
+mkdir -p $output_path
+
 if [[ $system_name == "linux" ]]; then
     cp install_output/lib/libSDL2-2.0.so.0 $output_path/libSDL2.so
 elif [[ $system_name == "macos" ]]; then

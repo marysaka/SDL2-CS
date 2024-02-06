@@ -18,14 +18,18 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: win-x64,   os: windows-latest, arch: x64   }
-        - { name: win-x86,   os: windows-latest, arch: Win32 }
-        - { name: win-arm64, os: windows-latest, arch: ARM64 }
-        - { name: linux-x64, os: ubuntu-20.04,   arch: amd64 }
-        - { name: linux-x86, os: ubuntu-20.04,   arch: i386  }
-        - { name: osx-x64,   os: macos-latest,   arch: x86_64}
-        - { name: osx-arm64, os: macos-latest,   arch: arm64 }
+        - { name: win-x64,     os: windows-latest, arch: x64    }
+        # - { name: win-x86,     os: windows-latest, arch: Win32  }
+        - { name: win-arm64,   os: windows-latest, arch: ARM64  }
+        - { name: linux-x64,   os: ubuntu-20.04,   arch: amd64  }
+        # - { name: linux-x86,   os: ubuntu-20.04,   arch: i386   }
+        - { name: linux-arm64, os: ubuntu-20.04,   arch: arm64  }
+        - { name: osx-x64,     os: macos-latest,   arch: x86_64 }
+        - { name: osx-arm64,   os: macos-latest,   arch: arm64  }
     steps:
+    - name: Setup qemu static
+      uses: docker/setup-qemu-action@v3
+      if: runner.os == 'Linux'
     - uses: actions/checkout@v4
       with:
         repository: Ryujinx/SDL
@@ -34,7 +38,7 @@ jobs:
       with:
         path: 'SDL2-CS'
     - name: Build and prepare release
-      run: SDL2-CS/ci/build.sh $PWD SDL2-CS/native/${{ matrix.platform.name }} ${{ matrix.platform.arch }}
+      run: SDL2-CS/ci/run.sh $PWD $PWD/SDL2-CS/native/${{ matrix.platform.name }} ${{ matrix.platform.arch }}
       shell: bash
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
