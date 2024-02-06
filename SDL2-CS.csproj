@@ -43,6 +43,11 @@
             <PackagePath>runtimes/linux-x64/native</PackagePath>
             <Pack>true</Pack>
         </Content>
+        <Content Include="$(MSBuildThisFileDirectory)native\linux-arm64\libSDL2.so">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/linux-arm64/native</PackagePath>
+            <Pack>true</Pack>
+        </Content>
         <Content Include="$(MSBuildThisFileDirectory)native\ios\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackagePath>runtimes/ios/native</PackagePath>
