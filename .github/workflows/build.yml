@@ -131,8 +131,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        repository: 'libsdl-org/SDL'
-        ref: 'SDL2'
+        repository: Ryujinx/SDL
+        ref: ${{ github.event.inputs.rev }}
     - uses: actions/checkout@v4
       with:
         path: 'SDL2-CS'
